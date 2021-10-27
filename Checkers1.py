@@ -72,14 +72,14 @@ class Shashki():
  
             j = 0
             if(chet == 0):
-                for i in range(7): # проверяем по диагонали справа есть ли фишка
-                    for j in range(7):
+                for i in range(8): # проверяем по диагонали справа есть ли фишка
+                    for j in range(8):
                         if( j != 7) and (i != 7):
                             if(m[i + 1][j + 1] == '0') and (m[i][j] == motion): 
                                 #print(i, j, 'ходит', i + 1, j + 1)
                                 return chet, i, j, i + 1, j + 1
                 j = 1
-                for i in range(7): # проверяем по диагонали cлева есть ли фишка
+                for i in range(8): # проверяем по диагонали cлева есть ли фишка
                     for j in range(8):
                         if(j != 0) and (i != 7):
                             if(m[i + 1][j - 1] == '0') and (m[i][j] == motion):
@@ -118,14 +118,14 @@ class Shashki():
  
             j = 0
             if(chet == 0):
-                for i in range(7): # проверяем по диагонали справа есть ли фишка
-                    for j in range(7):
+                for i in range(8): # проверяем по диагонали справа есть ли фишка
+                    for j in range(8):
                         if( j != 7) and (i != 0):
                             if(m[i - 1][j + 1] == '0') and (m[i][j] == motion): 
                                 #print(i, j, 'ходит', i - 1, j + 1)
                                 return chet, i, j, i - 1, j + 1
                 j = 1
-                for i in range(7): # проверяем по диагонали cлева есть ли фишка
+                for i in range(8): # проверяем по диагонали cлева есть ли фишка
                     for j in range(8):
                         if(j != 0) and (i != 0):
                             if(m[i - 1][j - 1] == '0') and (m[i][j] == motion):
