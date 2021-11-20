@@ -388,45 +388,48 @@ class Piece:
         self.row = row
         self.col = col
 
-# def minimax(position, depth, max_player, board):
-#     chet, x1, y1, x2, y2 = moves[0]
-#     if depth == 0:
-#         return Shashki.game(board), position
+def minimax(position, depth, max_player, board):
+    chet, x1, y1, x2, y2 = moves[0]
+    x = Shashki()
+    if depth == 0 or x.exam('w', chet) == 1:
+        return x.game(board), position
     
-#     if (max_player == 'w'):
-#         maxEval = float('-inf')
-#         best_move = None
-#         for move in get_all_moves(position, 'w', board, position[0]):
-#             evaluation = minimax(move, depth-1, False, board)[0]
-#             maxEval = max(maxEval, evaluation)
-#             if maxEval == evaluation:
-#                 best_move = move
+    if (max_player == 'w'):
+        maxEval = float('-inf')
+        best_move = None
+        for move in get_all_moves(position, 'w', board, position[0]):
+            evaluation = minimax(move, depth-1, False, board)[0]
+            maxEval = max(maxEval, evaluation)
+            if maxEval == evaluation:
+                best_move = move
         
-#         return maxEval, best_move
-#     else:
-#         minEval = float('inf')
-#         best_move = None
-#         for move in get_all_moves(position, 'b', board, move):
-#             evaluation = minimax(move, depth-1, True, board)[0]
-#             minEval = min(minEval, evaluation)
-#             if minEval == evaluation:
-#                 best_move = move
+        return board, best_move
+    else:
+        minEval = float('inf')
+        best_move = None
+        for move in get_all_moves(position, 'b', board, position[0]):
+            evaluation = minimax(move, depth-1, True, board)[0]
+            minEval = min(minEval, evaluation)
+            if minEval == evaluation:
+                best_move = move
         
-#         return minEval, best_move
+        return board, best_move
 
 
-# def simulate_move(move, position, board):
-#     chet, x1, y1, x2, y2 = position[0]
-#     board = Shashki.change(board, chet, 'w', x1, y1, x2, y2)
-#     return board
+def simulate_move(move, position, board):
+    chet, x1, y1, x2, y2 = position[0]
+    x = Shashki()
+    board = x.change(board, chet, 'w', x1, y1, x2, y2)
+    return board
 
 
-# def get_all_moves(position, color, board, move):
-#     moves = []
-#     board = simulate_move(move, position, board)
-#     moves = Shashki.getNextTurn(color, board)
+def get_all_moves(position, color, board, move):
+    moves = []
+    x = Shashki()
+    board = simulate_move(move, position, board)
+    moves = x.getNextTurn(color, board)
     
-#     return moves
+    return moves
 
 while(proverka == 0):
     
@@ -438,10 +441,11 @@ while(proverka == 0):
     сhet = 0
     moves = x.getNextTurn(m, motion)
     max_player = 'w'
-    # if motion == 'w':
-    #         value, new_board = minimax(moves, 3, max_player, m)
-    #         x.change(new_board)
-    
+    if motion == 'w':
+            new_board, best_move = minimax(moves, 1, max_player, m)
+            m = new_board
+            chet, x1, y1, x2, y2 = best_move
+            x.change(m, 'w', chet, x1, y1, x2, y2)
     chet, x1, y1, x2, y2 = moves[random.randint(0, len(moves) - 1)]
     proverka = 0
     new_board_1 = x.change(m, motion, chet, x1, y1, x2, y2)
