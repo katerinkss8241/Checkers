@@ -4,7 +4,7 @@ from copy import deepcopy
 
 
 class Shashki(): 
-    def game(self, m):
+    def game_W(self, m):
         num_white_simple = 0
         num_black_simple = 0
         num_white_damki = 0
@@ -20,6 +20,22 @@ class Shashki():
                 if (m[i][j] == 'B'):
                     num_black_damki += 1
         return num_white_simple - num_black_simple + (num_white_damki * 0.5 - num_black_damki * 0.5)
+    def game_B(self, m):
+        num_white_simple = 0
+        num_black_simple = 0
+        num_white_damki = 0
+        num_black_damki = 0
+        for i in range(8):
+            for j in range(8):
+                if (m[i][j] == 'w'):
+                    num_white_simple += 1
+                if (m[i][j] == 'W'):
+                    num_white_damki += 1
+                if (m[i][j] == 'b'):
+                    num_black_simple += 1
+                if (m[i][j] == 'B'):
+                    num_black_damki += 1
+        return num_black_simple - num_white_simple + (num_black_damki * 1.5 - num_white_damki * 1.5)
 
     def recordingMoves(self, x1, y1, motion, x2, y2, f: str, i):
         f = open(f, 'a')
@@ -388,17 +404,19 @@ class Piece:
         self.row = row
         self.col = col
 
-def minimax(position, depth, max_player, board):
+def minimax_W(position, depth, max_player, board):
     chet, x1, y1, x2, y2 = moves[0]
     x = Shashki()
     if depth == 0 or x.exam('w', chet) == 1:
-        return x.game(board), position
+        return x.game_W(board), position
     
     if (max_player == 'w'):
         maxEval = float('-inf')
         best_move = None
-        for move in get_all_moves(position, 'w', board, position[0]):
-            evaluation = minimax(move, depth-1, False, board)[0]
+        i = 0
+        for move in get_all_moves(position, 'w', board, position[i]):
+            i += 1
+            evaluation = minimax_W(move, depth-1, False, board)[0]
             maxEval = max(maxEval, evaluation)
             if maxEval == evaluation:
                 best_move = move
@@ -407,14 +425,43 @@ def minimax(position, depth, max_player, board):
     else:
         minEval = float('inf')
         best_move = None
-        for move in get_all_moves(position, 'b', board, position[0]):
-            evaluation = minimax(move, depth-1, True, board)[0]
+        j = 0
+        for move in get_all_moves(position, 'b', board, position[j]):
+            evaluation = minimax_W(move, depth-1, True, board)[0]
             minEval = min(minEval, evaluation)
             if minEval == evaluation:
                 best_move = move
         
         return board, best_move
-
+def minimax_B(position, depth, max_player, board):
+    chet, x1, y1, x2, y2 = moves[0]
+    x = Shashki()
+    if depth == 0 or x.exam('w', chet) == 1:
+        return x.game_B(board), position
+    
+    if (max_player == 'w'):
+        maxEval = float('-inf')
+        best_move = None
+        i = 0
+        for move in get_all_moves(position, 'w', board, position[i]):
+            i += 1
+            evaluation = minimax_B(move, depth-1, False, board)[0]
+            maxEval = max(maxEval, evaluation)
+            if maxEval == evaluation:
+                best_move = move
+        
+        return board, best_move
+    else:
+        minEval = float('inf')
+        best_move = None
+        j = 0
+        for move in get_all_moves(position, 'b', board, position[j]):
+            evaluation = minimax_B(move, depth-1, True, board)[0]
+            minEval = min(minEval, evaluation)
+            if minEval == evaluation:
+                best_move = move
+        
+        return board, best_move
 
 def simulate_move(move, position, board):
     chet, x1, y1, x2, y2 = position[0]
@@ -440,12 +487,19 @@ while(proverka == 0):
     m = x.readFromFile('3W_with_damki.txt')
     сhet = 0
     moves = x.getNextTurn(m, motion)
-    max_player = 'w'
-    if motion == 'w':
-            new_board, best_move = minimax(moves, 1, max_player, m)
+    
+    # if motion == 'w':
+    #         max_player = 'w'
+    #         new_board, best_move = minimax_W(moves, 1, max_player, m)
+    #         m = new_board
+    #         chet, x1, y1, x2, y2 = best_move
+    #         x.change(m, 'w', chet, x1, y1, x2, y2)
+    if motion == 'b':
+            max_player = 'b'
+            new_board, best_move = minimax_B(moves, 1, max_player, m)
             m = new_board
             chet, x1, y1, x2, y2 = best_move
-            x.change(m, 'w', chet, x1, y1, x2, y2)
+            x.change(m, 'b', chet, x1, y1, x2, y2)
     chet, x1, y1, x2, y2 = moves[random.randint(0, len(moves) - 1)]
     proverka = 0
     new_board_1 = x.change(m, motion, chet, x1, y1, x2, y2)
